@@ -1,0 +1,1093 @@
+{
+	"info": {
+		"_postman_id": "a7b2c9d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
+		"name": "Real Estate API",
+		"description": "Collection of API endpoints for the Real Estate application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role_id\": 1,\n    \"phone\": \"1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+							]
+						},
+						"description": "Register a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.token) {",
+									"    pm.environment.set(\"authToken\", jsonData.token);",
+									"    pm.environment.set(\"user_id\", jsonData.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login with user credentials"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						},
+						"description": "Get the current user's profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"logout"
+							]
+						},
+						"description": "Logout and invalidate token"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.token) {",
+									"    pm.environment.set(\"authToken\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"refresh"
+							]
+						},
+						"description": "Refresh the authentication token"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for user authentication"
+		},
+		{
+			"name": "Apartments",
+			"item": [
+				{
+					"name": "List All Apartments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get a paginated list of all apartments"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Apartment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.data && jsonData.data.id) {",
+									"    pm.environment.set(\"apartment_id\", jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Get details of a specific apartment"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Apartment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.apartment && jsonData.apartment.id) {",
+									"    pm.environment.set(\"apartment_id\", jsonData.apartment.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Luxury Apartment",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "A beautiful apartment with amazing views",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "1500",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Downtown",
+									"type": "text"
+								},
+								{
+									"key": "bedrooms",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "bathrooms",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "area",
+									"value": "1200",
+									"type": "text"
+								},
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/apartments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments"
+							]
+						},
+						"description": "Create a new apartment listing"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Apartment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated Luxury Apartment",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "An updated description for this beautiful apartment",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "1600",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Downtown",
+									"type": "text"
+								},
+								{
+									"key": "bedrooms",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "bathrooms",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "area",
+									"value": "1200",
+									"type": "text"
+								},
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Update an existing apartment listing"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Apartment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Delete an apartment listing"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Apartments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/search?query=luxury&min_price=1000&max_price=2000&bedrooms=2&bathrooms=2&location=Downtown",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "luxury"
+								},
+								{
+									"key": "min_price",
+									"value": "1000"
+								},
+								{
+									"key": "max_price",
+									"value": "2000"
+								},
+								{
+									"key": "bedrooms",
+									"value": "2"
+								},
+								{
+									"key": "bathrooms",
+									"value": "2"
+								},
+								{
+									"key": "location",
+									"value": "Downtown"
+								}
+							]
+						},
+						"description": "Search for apartments using various criteria"
+					},
+					"response": []
+				},
+				{
+					"name": "Featured Apartments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"featured"
+							]
+						},
+						"description": "Get a list of featured apartments"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for apartment management"
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Create Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.comment && jsonData.comment.id) {",
+									"    pm.environment.set(\"comment_id\", jsonData.comment.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"This is a great apartment!\",\n    \"rating\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"comments"
+							]
+						},
+						"description": "Add a comment to an apartment"
+					},
+					"response": []
+				},
+				{
+					"name": "List Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"comments"
+							]
+						},
+						"description": "Get all comments for an apartment"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated comment: This apartment is amazing!\",\n    \"rating\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/comments/{{comment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						},
+						"description": "Update an existing comment"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/comments/{{comment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						},
+						"description": "Delete a comment"
+					},
+					"response": []
+				},
+				{
+					"name": "Report Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.report && jsonData.report.id) {",
+									"    pm.environment.set(\"report_id\", jsonData.report.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reason\": \"This comment contains inappropriate content\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/comments/{{comment_id}}/report",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"comments",
+								"{{comment_id}}",
+								"report"
+							]
+						},
+						"description": "Report a comment for inappropriate content"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rating",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/apartments/{{apartment_id}}/rating",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"apartments",
+								"{{apartment_id}}",
+								"rating"
+							]
+						},
+						"description": "Get the average rating for an apartment"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for comment management"
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Pending Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/comments/pending",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"comments",
+								"pending"
+							]
+						},
+						"description": "Get all pending comments requiring admin approval"
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/comments/{{comment_id}}/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"comments",
+								"{{comment_id}}",
+								"approve"
+							]
+						},
+						"description": "Approve a pending comment"
+					},
+					"response": []
+				},
+				{
+					"name": "List Comment Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/comment-reports?status=pending",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"comment-reports"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						},
+						"description": "List all comment reports with optional status filtering"
+					},
+					"response": []
+				},
+				{
+					"name": "Resolve Comment Report",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"approve\",\n    \"resolution_notes\": \"Comment reviewed and found to be appropriate\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/comment-reports/{{report_id}}/resolve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"comment-reports",
+								"{{report_id}}",
+								"resolve"
+							]
+						},
+						"description": "Resolve a comment report with action (approve, reject, delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin-specific endpoints for content moderation"
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Add to Favorites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Add an apartment to favorites"
+					},
+					"response": []
+				},
+				{
+					"name": "List Favorites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites"
+							]
+						},
+						"description": "Get a list of user's favorite apartments"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from Favorites",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Remove an apartment from favorites"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Favorite Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/check/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"check",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Check if an apartment is in the user's favorites"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Favorite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/favorites/toggle/{{apartment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorites",
+								"toggle",
+								"{{apartment_id}}"
+							]
+						},
+						"description": "Toggle an apartment's favorite status"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing favorite apartments"
+		}
+	]
+}
