@@ -4,7 +4,11 @@ This document provides details of all the available endpoints in the Real Estate
 
 ## Base URL
 
-All API requests should be made to: `http://localhost:8000/api/`
+The base URL for all API endpoints is:
+
+```
+https://mughtarib.abaadre.com/public/api
+```
 
 ## Authentication
 

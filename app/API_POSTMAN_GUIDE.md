@@ -367,4 +367,12 @@ This guide will help you understand how to test and use all the endpoints availa
 
 - Remember to replace `{apartment_id}`, `{comment_id}`, and `{report_id}` with actual IDs in your requests
 - All authenticated endpoints require a valid token in the Authorization header
-- Different roles have different permissions - refer to the ROLE_BASED_ACTIONS.md document for details 
+- Different roles have different permissions - refer to the ROLE_BASED_ACTIONS.md document for details
+
+## API Base URL
+
+All API requests are made to:
+
+```
+https://mughtarib.abaadre.com/public/api
+``` 
