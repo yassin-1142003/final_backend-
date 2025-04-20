@@ -95,3 +95,25 @@ The application uses the following main database tables:
 ## License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Production Environment
+
+The API is deployed and accessible at:
+
+```
+https://mughtarib.abaadre.com/public/api
+```
+
+### API Documentation
+
+For comprehensive API documentation, please refer to:
+- [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+- [API_POSTMAN_GUIDE.md](./API_POSTMAN_GUIDE.md)
+
+### Postman Collection
+
+Import the Postman collection and environment files from:
+- Collection: [real-estate-api.postman_collection.json](./real-estate-api.postman_collection.json)
+- Environment: [real-estate-api.postman_environment.json](./real-estate-api.postman_environment.json)
+
+Remember to set the base URL to `https://mughtarib.abaadre.com/public/api` in your Postman environment.

@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow sensitive directories
+Disallow: /api/admin/
+Disallow: /api/login
+Disallow: /api/register
+Disallow: /storage/
+Disallow: /vendor/
+
+Sitemap: https://mughtarib.abaadre.com/sitemap.xml
